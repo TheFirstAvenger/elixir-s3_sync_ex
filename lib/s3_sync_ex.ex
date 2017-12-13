@@ -6,6 +6,7 @@ defmodule S3SyncEx do
   """
 
   def sync(src, bucket, key, secret, folder \\ nil) do
+    Logger.info("Syncing from #{src} to bucket #{bucket}, folder #{folder}")
     config = ExAws.Config.new(:s3, [access_key_id: key,secret_access_key: secret])
     remote_files = bucket
     |> ExAws.S3.list_objects
