@@ -3,8 +3,7 @@ defmodule S3SyncEx.CLI do
   def main(args \\ []) do
     args
     |> parse_args
-    |> IO.inspect
-    #|> sync
+    |> sync
   end
 
   defp parse_args(args) do

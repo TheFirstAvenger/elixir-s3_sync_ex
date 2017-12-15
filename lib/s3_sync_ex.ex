@@ -6,9 +6,9 @@ defmodule S3SyncEx do
   """
 
   def sync(src, bucket, key, secret, folder \\ nil, aws_opts \\ []) do
-    Logger.info("Syncing from #{src} to bucket #{bucket}, folder #{folder}")
+    Logger.info("Syncing from #{src} to bucket #{bucket}, folder #{folder} with aws_opts #{inspect aws_opts}")
     config = ExAws.Config.new(:s3, [access_key_id: key,secret_access_key: secret])
-    remote_files = bucket
+    bucket
     |> ExAws.S3.list_objects
     |> ExAws.request!(config)
     |> Map.get(:body)
@@ -22,7 +22,7 @@ defmodule S3SyncEx do
       end      
     end)
     
-    local_files = S3SyncEx.FlatFiles.list_all(src)
+    S3SyncEx.FlatFiles.list_all(src)
     |> Enum.map(&Path.relative_to(&1, src))
     |> Enum.map(fn f ->
       Task.async(fn ->
