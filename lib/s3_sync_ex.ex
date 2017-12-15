@@ -5,7 +5,7 @@ defmodule S3SyncEx do
   Documentation for S3SyncEx.
   """
 
-  def sync(src, bucket, key, secret, folder \\ nil) do
+  def sync(src, bucket, key, secret, folder \\ nil, aws_opts \\ []) do
     Logger.info("Syncing from #{src} to bucket #{bucket}, folder #{folder}")
     config = ExAws.Config.new(:s3, [access_key_id: key,secret_access_key: secret])
     remote_files = bucket
@@ -28,7 +28,7 @@ defmodule S3SyncEx do
       Task.async(fn ->
         Logger.info "Putting #{to_remote_object_name(f, folder)}"
         bucket
-        |> ExAws.S3.put_object(to_remote_object_name(f, folder), File.read!(to_local_folder(f, src)), content_type: MIME.from_path(f))
+        |> ExAws.S3.put_object(to_remote_object_name(f, folder), File.read!(to_local_folder(f, src)), [content_type: MIME.from_path(f)] ++ aws_opts)
         |> ExAws.request!(config)
       end)
     end)
