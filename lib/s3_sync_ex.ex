@@ -28,7 +28,7 @@ defmodule S3SyncEx do
       Task.async(fn ->
         Logger.info "Putting #{to_remote_object_name(f, folder)}"
         bucket
-        |> ExAws.S3.put_object(to_remote_object_name(f, folder), File.read!(to_local_folder(f, src)))
+        |> ExAws.S3.put_object(to_remote_object_name(f, folder), File.read!(to_local_folder(f, src)), content_type: MIME.from_path(f))
         |> ExAws.request!(config)
       end)
     end)
